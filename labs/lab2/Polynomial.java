@@ -65,21 +65,17 @@ public class Polynomial {
     }
 
     public Polynomial multiply(Polynomial p) {
-        if (this.coefficients.length == 0)
-            return new Polynomial(p.coefficients, p.exponents);
-        if (p.coefficients.length == 0)
-            return new Polynomial(this.coefficients, this.exponents);
-        int max_exp = Math.max(this.exponents[this.exponents.length - 1],
-                p.exponents[p.exponents.length - 1]);
+        if (this.coefficients.length == 0 || p.coefficients.length == 0)
+            return new Polynomial(new double[0], new int[0]);
+        int max_exp = this.exponents[this.exponents.length - 1]
+                + p.exponents[p.exponents.length - 1];
         double[] temp_coe = new double[max_exp + 1];
-        for (int i = 0; i < this.exponents.length; i++) {
-            temp_coe[this.exponents[i]] = this.coefficients[i];
-        }
-        for (int i = 0; i < p.exponents.length; i++) {
-            if (temp_coe[p.exponents[i]] != 0)
-                temp_coe[p.exponents[i]] *= p.coefficients[i];
-            else
-                temp_coe[p.exponents[i]] = p.coefficients[i];
+        for(int i = 0; i < this.exponents.length; i++) {
+            for (int j = 0; j < p.exponents.length; j++) {
+                int exp = this.exponents[i] + p.exponents[j];
+                double coe = this.coefficients[i] * p.coefficients[j];
+                temp_coe[exp] += coe;
+            }
         }
         int count = 0;
         for (int i = 0; i < temp_coe.length; i++) {
@@ -98,6 +94,7 @@ public class Polynomial {
         }
         return new Polynomial(res_coe, res_exp);
     }
+
 
     public double evaluate(double x) {
         double sum = 0.0;
